@@ -34,13 +34,13 @@ body {
     min-width: 100%;
     background-size: 100% 100%;
 
-    background-image: url('/assets/bg_portrait.webp');
+    background-image: url('assets/bg_portrait.webp');
     aspect-ratio: calc(9/16);
 }
 
 @media screen and (min-device-aspect-ratio: 1) {
     .hero-bg video {
-        background-image: url('/assets/bg.webp');
+        background-image: url('assets/bg.webp');
         aspect-ratio: calc(16/9);
     }
 
