@@ -10,10 +10,46 @@
 </head>
 
 <body>
+    <!-- The section with inspiring words and the video background -->
     <section class="hero">
+
+        <!--
+             Wrapper for the video background. Needed to ensure the aspect ratio and centering the
+             video box
+         -->
         <div class="hero-bg">
-            <video muted loop playsinline data-autoplay="true"
+
+            <!-- 
+                The king of this show - the video tag. Couple of notes:
+                - the video must be muted in order to be autoplayed. If you don't add the "muted" attribute
+                  even if the video does not contain audio track, browser will not autoplay it with error 
+                  "I don't want to bother my dear human with the noise of your crappy video. You want to play 
+                  the clip make sure that human presses the play button" or so.
+                - the poster we're using is just a transparent gif. This technique allows us to dynamically
+                  select the backround poster - either for portrait or landscape video clip. See style.css,
+                  specifically ".hero-bg video" sections for more context
+             -->
+            <video muted loop playsinline
                 poster="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
+
+                <!-- 
+                    We're providing the browser with 3 sources and let it pick the preferred one. We have 
+                    videos encoded with HEVC, VP9 and AVC respectively. 
+                    
+                    Each video source tag does not specify the source directly, but instead uses "data-src" 
+                    and "data-portrait-src". This allows us  to first defer fetching of the videos until all 
+                    of the page is loaded (poster will be displayed until it happens). 
+                    
+                    It also makes it possible to select a video files with correct orientation (portrait and 
+                    landscape).
+                    
+                    Final important thing to note is the use of codecs="hvc1" parameter of the first source 
+                    type. This clarification is necessary as by default browsers assume video/mp4 is video 
+                    file encoded with AVC rather than HEVC. In result browsers/platforms not supporting HEVC 
+                    playback (e.g. Chrome) will try to play the file and fail miserabely. 
+
+                    See the loader.js for more on how the video files are loaded and played
+                 -->
                 <source data-src="assets/bg_hevc.mp4" data-portrait-src="assets/bg_portrait_hevc.mp4"
                     type='video/mp4; codecs="hvc1"' />
                 <source data-src="assets/bg_vp9.webm" data-portrait-src="assets/bg_portrait_vp9.webm"
@@ -22,11 +58,17 @@
             </video>
         </div>
 
+        <!-- All the elements below are not relevant for the demo purposes. It's just filler content. -->
         <div class="hero-content">
             <h1>Some inspiring text<br>goes here</h1>
             <p>With some more explaining words maybe. I really don' t know</p>
         </div>
     </section>
+
+    <!-- 
+        A in-flow gap between the top of the viewport and the top of the scrollable page content. Allows the
+    non-hero content to cover the hero section.
+ -->
     <div class="gap-for-hero"></div>
 
     <section class="container-fluid wave bg-success">

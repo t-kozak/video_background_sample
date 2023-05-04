@@ -1,51 +1,107 @@
 html,
 body {
+    /* Make sure that the video takes all of the viewport. */
     margin: 0;
+
+    /* 
+    We're disabling the default mobile overscrol behaviour to prevent the default rubber-band type scroll 
+    effect. With that effect in place, human can see the video content when scrolling to the end of content 
+    and then pulling up. Ideally I'd like to add an empty box at the end of the content that matches the color
+    of the last content item - I just don't know how to do it.
+    */
     overscroll-behavior-y: none;
 }
 
+/* 
+The hero section is fixed and takes all of the view port. This creates the effect of being covered by reminder 
+of the content as human scrolls the page down 
+ */
 .hero {
-    width: 100%;
     position: fixed;
-    overflow: hidden;
+    width: 100%;
     height: 100vh;
 }
 
-.hero-content {
-    /* z-index: 10; */
-    color: white;
-    padding-top: 10%;
-    padding-left: 20%;
-}
-
+/* 
+The container for the background video. Make it absolute and "lower" on z-axis, make it take all the space 
+and clip any overflowing content (to maintain aspect ratio of the video tag inside).
+ */
 .hero-bg {
+    z-index: -1;
     position: absolute;
+    overflow: hidden;
     width: 100%;
     height: 100%;
-    justify-content: center;
-    z-index: -10;
-    filter: brightness(50%);
 }
 
+/* 
+The star of the show - background video. 
+Position is absolutely and use top+left+transform to center it on the x axis.
+Use of min-width, min-height being 100% and specific aspect ratio ensure the video fills the container fully
+while aspect ratio is maintained. That way, any aspect ratio mismatches are fixed by overflowing and clipping 
+excess content. Please note that the aspect ratio is for portrait by default and for landscape we use media 
+query to overwrite it.
+
+The background size 100% in both axes ensures the background poster fills all of the video tag box.
+
+Finally we have background image for the actual portrait poster. Again overriden in the media query selector
+for a landscape. 
+
+Finally finally, to make things a bit more consistent and allow readable white text on top of moving videos 
+we dim the video a bit with filter:brightness.
+
+ */
 .hero-bg video {
-    z-index: -1;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
     min-height: 100%;
     min-width: 100%;
-    background-size: 100% 100%;
-
-    background-image: url('assets/bg_portrait.webp');
     aspect-ratio: calc(9/16);
+
+    background-size: 100% 100%;
+    background-image: url('assets/bg_portrait.webp');
+
+    filter: brightness(50%);
+
 }
+
+/* 
+For __devices__ (not viewports) with aspect ratio 1 or more (aka landscape) change the video poster and 
+video's aspect ratio.
+
+It's important to use device's aspect ratio and not viewports as this prevents change to config with the 
+resize of the browser window. Just makes things simpler.
+
+Also it's important to note that this value must match what's used in the loader.js for consistency. The
+loader.js uses it to control which video source to use, the CSS which poster.
+*/
 
 @media screen and (min-device-aspect-ratio: 1) {
     .hero-bg video {
         background-image: url('assets/bg.webp');
         aspect-ratio: calc(16/9);
     }
-
 }
 
+/* 
+The hero content must be above the video background on z-axis. Make it white to look good on darkened video
+also position it somewhere centrally while we're at it.
+  */
+.hero-content {
+    z-index: 10;
+    color: white;
+    padding-top: 10%;
+    padding-left: 20%;
+}
+
+/* 
+Make sure that the gap for hero content covers most of the viewport y axis. We're leaving those 80pxs 
+to allow the wave to portrude a bit, to indicate that there is some more action happening here and entice human
+to scroll.
+*/
 .gap-for-hero {
     height: calc(100vh - 80px);
 }
@@ -56,7 +112,6 @@ The rest of the "landing page". Non material for the demo purposes.
 */
 
 .wave {
-    /* position: relative; */
     --size: 50px;
     --R: calc(var(--size)*1.28);
 
