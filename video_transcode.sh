@@ -100,10 +100,7 @@ vid_name=${vid_file%.*}
 echo "Transcoding $input_vid -> $out_dir/${vid_name}.{webp,_hevc.mp4,_avc.mp4,.webm}"
 
 # Extract first frame for the poster
-do_exec "ffmpeg -y -i $input_vid -vframes 1  -f image2 -vf "$video_filter" ${out_dir}/${vid_name}.jpg"
-
-# Convert it to WebP, because we're cool kids
-do_exec "ffmpeg -y -i ${out_dir}/${vid_name}.jpg ${out_dir}/${vid_name}.webp"
+do_exec "ffmpeg -y -i $input_vid -vframes 1  -f image2 -vf "$video_filter" ${out_dir}/${vid_name}.webp"
 
 # Transcode to H.264/AVC
 do_exec "ffmpeg -y -i $input_vid ${no_audio} -c:v libx264    -vf "$video_filter" -b:v ${avc_rate}  -preset slower -pix_fmt yuv420p ${out_dir}/${vid_name}_avc.mp4"
