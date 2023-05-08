@@ -8,7 +8,6 @@ video_filter="scale=\"ceil(iw/4)*2:ceil(ih/4)*2\""
 avc_rate="320k"
 hevc_rate="220k"
 webm_rate="220k"
-no_audio=""
 
 # Function to print help message
 print_help() {
@@ -64,10 +63,6 @@ while [[ $# -gt 0 ]]; do
     shift
     shift
     ;;
-  --no-audio)
-    no_audio=-an
-    shift
-    ;;
   -h | --help)
     print_help
     exit 0
@@ -103,11 +98,11 @@ echo "Transcoding $input_vid -> $out_dir/${vid_name}.{webp,_hevc.mp4,_avc.mp4,.w
 do_exec "ffmpeg -y -i $input_vid -vframes 1  -f image2 -vf "$video_filter" ${out_dir}/${vid_name}.webp"
 
 # Transcode to H.264/AVC
-do_exec "ffmpeg -y -i $input_vid ${no_audio} -c:v libx264    -vf "$video_filter" -b:v ${avc_rate}  -preset slower -pix_fmt yuv420p ${out_dir}/${vid_name}_avc.mp4"
+do_exec "ffmpeg -y -i $input_vid -an -c:v libx264    -vf "$video_filter" -b:v ${avc_rate}  -preset slower -pix_fmt yuv420p ${out_dir}/${vid_name}_avc.mp4"
 
 # Transcode to H.265/HEVC
-do_exec "ffmpeg -y -i $input_vid ${no_audio} -c:v libx265    -vf "$video_filter" -b:v ${hevc_rate} -preset slower -tag:v hvc1      ${out_dir}/${vid_name}_hevc.mp4"
+do_exec "ffmpeg -y -i $input_vid -an -c:v libx265    -vf "$video_filter" -b:v ${hevc_rate} -preset slower -tag:v hvc1      ${out_dir}/${vid_name}_hevc.mp4"
 
 # # Transcode to VP9, two passes
-do_exec "ffmpeg -y -i $input_vid ${no_audio} -c:v libvpx-vp9 -vf "$video_filter" -b:v ${webm_rate} -pass 1  -f null /dev/null"
-do_exec "ffmpeg -y -i $input_vid ${no_audio} -c:v libvpx-vp9 -vf "$video_filter" -b:v ${webm_rate} -pass 2  ${out_dir}/${vid_name}_vp9.webm"
+do_exec "ffmpeg -y -i $input_vid -an -c:v libvpx-vp9 -vf "$video_filter" -b:v ${webm_rate} -pass 1  -f null /dev/null"
+do_exec "ffmpeg -y -i $input_vid -an -c:v libvpx-vp9 -vf "$video_filter" -b:v ${webm_rate} -pass 2  ${out_dir}/${vid_name}_vp9.webm"
